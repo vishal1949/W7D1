@@ -1,5 +1,5 @@
-import  RECEIVE_TODOS  from "../actions/todo_actions";
-import  RECEIVE_TODO  from "../actions/todo_actions";
+import  {RECEIVE_TODOS}  from "../actions/todo_actions";
+import  {RECEIVE_TODO}  from "../actions/todo_actions";
 
 
 const initialState = {
@@ -18,32 +18,46 @@ const initialState = {
 };
 
 
-const todosReducer = (state = initialState, action) => {
+export const todosReducer = (state = initialState, action) => {
+  // debugger
   switch(action.type){
     case RECEIVE_TODOS:
       return todosToObject(state, action.todos);  // or ...action.todos // spreading the state and adding in the action.todos array
+    case RECEIVE_TODO:
+      return todoToObject(state, action.todo);
     default: 
       return state;
   }
 }
 
-const todosToObject = (oldState, todos) => {
-  let totalLenth = Object.keys(oldState).length + todos.length + 1;
+const todoToObject = (oldState, todo) => { //populates newState and keys in the todo
+  let newState = {};
+  for (let i = 1; i <= Object.keys(oldState).length; i++) {
+    newState[i] = oldState[i];
+  }
+  newState[todo.id] = todo;
+  return newState;
+}
 
-  let obj = {};
+//todo is one obj
+
+const todosToObject = (oldState, todos) => { //populates (newState) and adds in todos objects
+  let totalLength = Object.keys(oldState).length + todos.length + 1;
+
+  let newState = {};
   for(let i = 1; i <= Object.keys(oldState).length; i++){
-    obj[i] = oldState[i];
+    newState[i] = oldState[i];
   }
   let j = 0;
-  for (let i = Object.keys(obj).length + 1; i < totalLenth; i++ ){
-    obj[i] = todos[j];
+  for (let i = Object.keys(newState).length + 1; i < totalLength; i++ ){
+    newState[todos[j].id] = todos[j];
     j++;
   }
-  return obj;
+  return newState;
   
 }
 
-export default todosReducer;
+
 // let obj = {};
 // for(let i = 1; i <= oldState.length; i++){ //
 //   console.log(oldState[i]);
